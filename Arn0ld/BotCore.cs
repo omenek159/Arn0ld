@@ -131,7 +131,7 @@ namespace Arn0ld
 
         private Task UpdatePublicChannels()
         {
-            //GetPublicChannels();
+            GetPublicChannels();
 
             if (freepublicchannels.Count < 2)
             {
