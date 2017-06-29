@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -50,21 +49,21 @@ namespace Arn0ld
 
         private Task ChannelUpdated(SocketChannel channelbefore, SocketChannel channelafter)
         {
-
+            GetPublicChannels();
 
             return Task.CompletedTask;
         }
 
         private Task ChannelDestroyed(SocketChannel channel)
         {
-
+            GetPublicChannels();
 
             return Task.CompletedTask;
         }
 
         private Task ChannelCreated(SocketChannel channel)
         {
-
+            GetPublicChannels();
 
             return Task.CompletedTask;
         }
@@ -74,6 +73,35 @@ namespace Arn0ld
             _guild = _client.Guilds.FirstOrDefault();
 
             GetPublicChannels();
+
+            return Task.CompletedTask;
+        }
+
+        private Task UserVoiceStateUpdated(SocketUser arg1, SocketVoiceState arg2, SocketVoiceState arg3)
+        {
+            UpdatePublicChannels();
+
+            return Task.CompletedTask;
+        }
+
+        private Task UserJoined(SocketGuildUser arg)
+        {
+            var user = arg.Username;
+            var channel = arg.VoiceChannel;
+
+            return Task.CompletedTask;
+        }
+
+        private Task MessageReceived(SocketMessage arg)
+        {
+            var message = arg as SocketUserMessage;
+
+            return Task.CompletedTask;
+        }
+
+        public static Task Log(LogMessage arg)
+        {
+            Console.WriteLine(arg.ToString());
 
             return Task.CompletedTask;
         }
@@ -101,21 +129,20 @@ namespace Arn0ld
             }
         }
 
-
         private Task UpdatePublicChannels()
         {
-            GetPublicChannels();
+            //GetPublicChannels();
 
             if (freepublicchannels.Count < 2)
             {
                 _guild.CreateVoiceChannelAsync("Public " + (publicchannels.Capacity + 1));
-                GetPublicChannels();
+                //GetPublicChannels();
             }
 
             if (freepublicchannels.Count > 2 & publicchannels.Count > 6)
             {
                 _guild.GetChannel(publicchannels.Last().Id).DeleteAsync();
-                GetPublicChannels();
+                //GetPublicChannels();
             }
 
             return Task.CompletedTask;
@@ -142,36 +169,10 @@ namespace Arn0ld
             publicchannels.OrderBy(x => x.Name).ToList();
             freepublicchannels.OrderBy(x => x.Name).ToList();
 
-            return Task.CompletedTask;
-        }
-
-        private Task UserVoiceStateUpdated(SocketUser arg1, SocketVoiceState arg2, SocketVoiceState arg3)
-        {
-            UpdatePublicChannels();
+            Console.WriteLine("Public: " + publicchannels.Count);
+            Console.WriteLine("Free: " + freepublicchannels.Count);
 
             return Task.CompletedTask;
-        }
-
-        private Task UserJoined(SocketGuildUser arg)
-        {
-            var user = arg.Username;
-            var channel = arg.VoiceChannel;           
-
-            return Task.CompletedTask;
-        }
-
-        private Task MessageReceived(SocketMessage arg)
-        {
-            var message = arg as SocketUserMessage;
-
-            return Task.CompletedTask;
-        }
-
-        public static Task Log(LogMessage arg)
-        {
-            Console.WriteLine(arg.ToString());
-
-            return Task.CompletedTask;
-        }
+        }        
     }
 }
