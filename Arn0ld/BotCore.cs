@@ -71,7 +71,7 @@ namespace Arn0ld
             return Task.CompletedTask;
         }
 
-        private Task Ready()
+        private async Task Ready()
         {
             _guild = _client.Guilds.FirstOrDefault();
 
@@ -79,11 +79,11 @@ namespace Arn0ld
 
             Console.WriteLine(_logchannel.Name);
 
-            ChannelLog("Ready!");
+            await ChannelLog("Ready!");
 
-            GetPublicChannels();
+            await GetPublicChannels();
 
-            return Task.CompletedTask;
+            //return Task.CompletedTask;
         }
 
         private async Task UserVoiceStateUpdated(SocketUser arg1, SocketVoiceState arg2, SocketVoiceState arg3)
@@ -113,7 +113,7 @@ namespace Arn0ld
             return Task.CompletedTask;
         }
 
-        public static async  Task ChannelLog(string message)
+        public static async Task ChannelLog(string message)
         {
             var eb = new EmbedBuilder();
             eb.WithDescription(message);
