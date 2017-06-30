@@ -18,6 +18,9 @@ namespace Arn0ld
 
         SocketGuild _guild;
 
+        string logchannel = "bot-log";
+        static SocketTextChannel _logchannel;
+
         string token = "MzI3MzcyMzk2OTkyNTI4Mzg0.DDGdfA.uZ6gxpSi-76Sk6-0Ck9CFw7j7Yw";
 
         List<SocketGuildChannel> publicchannels = new List<SocketGuildChannel>();
@@ -28,7 +31,7 @@ namespace Arn0ld
             _client = new DiscordSocketClient(new DiscordSocketConfig
             {
                 LogLevel = LogSeverity.Debug,
-                DefaultRetryMode = RetryMode.AlwaysFail
+                //DefaultRetryMode = RetryMode.AlwaysFail
             });
 
             await InitCommands();
@@ -72,16 +75,18 @@ namespace Arn0ld
         {
             _guild = _client.Guilds.FirstOrDefault();
 
+            _logchannel = _guild.GetTextChannel(_guild.TextChannels.Where(x => x.Name == logchannel).First().Id);
+
+            ChannelLog("Ready!");
+
             GetPublicChannels();
 
             return Task.CompletedTask;
         }
 
-        private Task UserVoiceStateUpdated(SocketUser arg1, SocketVoiceState arg2, SocketVoiceState arg3)
+        private async Task UserVoiceStateUpdated(SocketUser arg1, SocketVoiceState arg2, SocketVoiceState arg3)
         {
-            UpdatePublicChannels();
-
-            return Task.CompletedTask;
+            await UpdatePublicChannels();
         }
 
         private Task UserJoined(SocketGuildUser arg)
@@ -94,7 +99,7 @@ namespace Arn0ld
 
         private Task MessageReceived(SocketMessage arg)
         {
-            var message = arg as SocketUserMessage;
+            //var message = arg as SocketUserMessage;
 
             return Task.CompletedTask;
         }
@@ -102,6 +107,16 @@ namespace Arn0ld
         public static Task Log(LogMessage arg)
         {
             Console.WriteLine(arg.ToString());
+
+            return Task.CompletedTask;
+        }
+
+        public static Task ChannelLog(string message)
+        {
+            var eb = new EmbedBuilder();
+            eb.WithDescription(message);
+
+            _logchannel.SendMessageAsync("", false, eb);
 
             return Task.CompletedTask;
         }
@@ -129,23 +144,19 @@ namespace Arn0ld
             }
         }
 
-        private Task UpdatePublicChannels()
+        private async Task UpdatePublicChannels()
         {
-            GetPublicChannels();
+            await GetPublicChannels();
 
             if (freepublicchannels.Count < 2)
             {
-                _guild.CreateVoiceChannelAsync("Public " + (publicchannels.Capacity + 1));
-                //GetPublicChannels();
+                var message = await _guild.CreateVoiceChannelAsync("Public " + (publicchannels.Capacity + 1));
             }
 
             if (freepublicchannels.Count > 2 & publicchannels.Count > 6)
             {
-                _guild.GetChannel(publicchannels.Last().Id).DeleteAsync();
-                //GetPublicChannels();
+                await _guild.GetChannel(publicchannels.Last().Id).DeleteAsync();
             }
-
-            return Task.CompletedTask;
         }
 
         private Task GetPublicChannels()
@@ -168,9 +179,6 @@ namespace Arn0ld
 
             publicchannels.OrderBy(x => x.Name).ToList();
             freepublicchannels.OrderBy(x => x.Name).ToList();
-
-            Console.WriteLine("Public: " + publicchannels.Count);
-            Console.WriteLine("Free: " + freepublicchannels.Count);
 
             return Task.CompletedTask;
         }        
