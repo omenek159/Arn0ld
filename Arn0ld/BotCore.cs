@@ -113,15 +113,15 @@ namespace Arn0ld
             return Task.CompletedTask;
         }
 
-        public static Task ChannelLog(string message)
+        public static async  Task ChannelLog(string message)
         {
             var eb = new EmbedBuilder();
             eb.WithDescription(message);
 
-            //_logchannel.SendMessageAsync("", false, eb);
-            _logchannel.SendMessageAsync("test");
+            await _logchannel.SendMessageAsync("", false, eb);
+            //_logchannel.SendMessageAsync("test");
 
-            return Task.CompletedTask;
+            //return Task.CompletedTask;
         }
 
         private async Task InitCommands()
