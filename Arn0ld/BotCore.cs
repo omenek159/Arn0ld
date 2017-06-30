@@ -118,7 +118,8 @@ namespace Arn0ld
             var eb = new EmbedBuilder();
             eb.WithDescription(message);
 
-            _logchannel.SendMessageAsync("", false, eb);
+            //_logchannel.SendMessageAsync("", false, eb);
+            _logchannel.SendMessageAsync("test");
 
             return Task.CompletedTask;
         }
