@@ -118,7 +118,7 @@ namespace Arn0ld
             var eb = new EmbedBuilder();
             eb.WithDescription(message);
 
-            await _logchannel.SendMessageAsync("", false, eb);
+            await _logchannel.SendMessageAsync("test", false, eb);
             //_logchannel.SendMessageAsync("test");
 
             //return Task.CompletedTask;
