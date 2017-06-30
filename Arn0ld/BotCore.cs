@@ -77,6 +77,8 @@ namespace Arn0ld
 
             _logchannel = _guild.GetTextChannel(_guild.TextChannels.Where(x => x.Name == logchannel).First().Id);
 
+            Console.WriteLine(_logchannel.Name);
+
             ChannelLog("Ready!");
 
             GetPublicChannels();
