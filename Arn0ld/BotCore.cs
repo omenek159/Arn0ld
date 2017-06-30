@@ -116,9 +116,10 @@ namespace Arn0ld
         public static async Task ChannelLog(string message)
         {
             var eb = new EmbedBuilder();
-            eb.WithDescription(message);
+            //eb.WithDescription(message);
+            eb.Description = message;
 
-            await _logchannel.SendMessageAsync("test", false, eb);
+            await _logchannel.SendMessageAsync("", false, eb);
             //_logchannel.SendMessageAsync("test");
 
             //return Task.CompletedTask;
